@@ -1124,3 +1124,30 @@
   font-weight: 400;
   line-height: 2;
 }
+
+.back-to-top {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  display: inline-block;
+  width: 42px;
+  height: 42px;
+  padding: 8px;
+  border-radius: 10px;
+  color: var(--primary-color);
+  border: 1px solid currentColor;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 9999;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.back-to-top:hover {
+  color: var(--white-color);
+  background: var(--primary-color);
+}
+
+.back-to-top.active {
+  visibility: visible;
+  opacity: 1;
+}

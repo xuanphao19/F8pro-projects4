@@ -126,3 +126,15 @@ dotList.forEach((item, idx) => {
 });
 
 startSlider();
+
+// ====== backToTop =======
+
+const backToTop = $(".back-to-top");
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 200) {
+    backToTop.classList.add("active");
+  } else {
+    backToTop.classList.remove("active");
+  }
+});
