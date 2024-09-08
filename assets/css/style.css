@@ -43,11 +43,16 @@
   font-weight: 800;
   line-height: 1.15;
   text-wrap: wrap;
+
+  /* Tạo màu nền gradient cho chữ */
+  background-clip: text;
+  background: linear-gradient(45deg, #ff6b6b, #f5d365, #0400ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .hero .desc {
   margin-bottom: 38px;
-  /* Width 1169px */
 }
 .hero .row {
   --row-gap: 38px;
@@ -290,8 +295,8 @@
   position: absolute;
   bottom: 0;
   right: 50px;
-  width: 422px;
-  height: 305px;
+  width: 80%;
+  aspect-ratio: 3/2.2;
   border-radius: 16px;
   background: linear-gradient(180deg, #fce0ef 0%, #fac3d1 100%);
   z-index: -1;
@@ -304,8 +309,8 @@
 }
 
 .services .col-img {
-  width: 458px;
-  height: 500px;
+  width: 80%;
+  aspect-ratio: 2.5/ 3;
   border-radius: 18px;
   overflow: hidden;
 }
@@ -410,22 +415,17 @@
   padding: 30px 10px 10px 28px;
   margin-bottom: 24px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 188, 122, 0.2);
-  background: var(--white-color);
   transition: box-shadow 0.3s linear;
-
-  /*  */
+  background: rgba(255, 188, 122, 0.38);
+  border: 1px solid rgba(255, 188, 122, 0.2);
   border-right-color: rgba(239, 176, 113, 0.7);
   border-bottom-color: rgba(239, 176, 113, 0.75);
-  background: rgba(255, 188, 122, 0.38);
   box-shadow: inset -6px -6px 22px 0px rgba(255, 188, 122, 0.6), inset 6px 6px 22px 0px var(--white-color);
 }
-
 .reviewa .card:hover {
   box-shadow: inset -6px -6px 22px 0px rgba(255, 188, 122, 0.6), inset 6px 6px 22px 0px var(--white-color),
     16px 18px 52px 0px rgba(0, 0, 0, 0.21), -16px 16px 52px 0px rgba(0, 0, 0, 0.02);
 }
-
 .reviewa .sub-title {
   margin-bottom: 18px;
   font-family: "Sora";
@@ -751,7 +751,6 @@
   overflow: hidden;
   border-radius: 20px;
   background: #97d6ee12;
-  /* background: #c7dfe9; */
 }
 
 .carousel .sliders {
@@ -1125,29 +1124,27 @@
   line-height: 2;
 }
 
-.back-to-top {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
+.back-top {
   display: inline-block;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
   width: 42px;
   height: 42px;
   padding: 8px;
   border-radius: 10px;
   color: var(--primary-color);
   border: 1px solid currentColor;
-  opacity: 0;
   visibility: hidden;
-  z-index: 9999;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 999;
+  opacity: 0;
+  transition: color 0.3s ease, background 0.3s ease, visibility 0.3s ease;
 }
-
-.back-to-top:hover {
+.back-top:hover {
   color: var(--white-color);
   background: var(--primary-color);
 }
-
-.back-to-top.active {
+.back-top.active {
   visibility: visible;
   opacity: 1;
 }

@@ -39,41 +39,61 @@ const sliderDot = [];
 
 let sliderWidth = carousel.offsetWidth;
 
-sliderItems.forEach((item, idx) => {
-  item.style.width = sliderWidth + "px";
-  sliderDot.push(`<span class="dot${idx === 0 ? " active" : ""}"></span>`);
-});
+const setupSlider = () => {
+  sliderItems.forEach((item, idx) => {
+    item.style.width = sliderWidth + "px";
+    sliderDot.push(`<span class="dot${idx === 0 ? " active" : ""}"></span>`);
+  });
 
-if (dots) dots.innerHTML = sliderDot.join("");
-const dotList = $$(".dot");
+  if (dots) dots.innerHTML = sliderDot.join("");
+  dotList = Array.from(carousel.querySelectorAll(".dot"));
+};
+setupSlider();
 
-const firstClone = sliderItems[0].cloneNode(true);
-const lastClone = sliderItems[itemLength].cloneNode(true);
-
-firstClone.id = "first-clone";
-lastClone.id = "last-clone";
-slider.prepend(lastClone);
-slider.append(firstClone);
-
-window.addEventListener("resize", function () {
-  sliderWidth = carousel.offsetWidth;
-  sliderItems.forEach((item) => (item.style.width = sliderWidth + "px"));
-});
+const setupClones = () => {
+  const firstClone = sliderItems[0].cloneNode(true);
+  const lastClone = sliderItems[itemLength].cloneNode(true);
+  firstClone.id = "first-clone";
+  lastClone.id = "last-clone";
+  slider.prepend(lastClone);
+  slider.append(firstClone);
+};
+setupClones();
 
 const startTranslate = () => (slider.style.transform = `translateX(${-sliderWidth * index}px)`);
 startTranslate();
+
+const getSlider = () => $$(".slider-item");
+const handleSlider = () => {
+  startTranslate();
+  slider.style.transition = "0.8s";
+};
+
+const updateSliderLayout = () => {
+  sliderWidth = carousel.offsetWidth;
+  sliderItems.forEach((item) => (item.style.width = sliderWidth + "px"));
+};
+
+const transitionEndHandler = () => {
+  sliderItems = getSlider();
+  if (sliderItems[index]?.id === "first-clone") {
+    slider.style.transition = "none";
+    index = 1;
+    startTranslate();
+  }
+  if (sliderItems[index]?.id === "last-clone") {
+    slider.style.transition = "none";
+    index = sliderItems.length - 2;
+    startTranslate();
+  }
+};
 
 const startSlider = () => {
   idInterval = setInterval(() => {
     handleNextSlider();
   }, timer);
 };
-
-const getSlider = () => $$(".slider-item");
-const handleSlider = (index) => {
-  startTranslate();
-  slider.style.transition = "0.8s";
-};
+const pauseSlider = () => clearInterval(idInterval);
 
 const handleNextSlider = () => {
   sliderItems = getSlider();
@@ -91,25 +111,15 @@ const handlePrevSlider = () => {
   handleSlider(index);
 };
 
-slider.addEventListener("transitionend", () => {
-  sliderItems = getSlider();
-  if (sliderItems[index]?.id === firstClone.id) {
-    slider.style.transition = "none";
-    index = 1;
-    startTranslate();
-  }
-  if (sliderItems[index]?.id === lastClone.id) {
-    slider.style.transition = "none";
-    index = sliderItems.length - 2;
-    startTranslate();
-  }
-});
-
-const clearIdInterval = () => clearInterval(idInterval);
-carousel.addEventListener("mouseenter", clearIdInterval);
-carousel.addEventListener("mouseleave", startSlider);
-nextBtn.addEventListener("click", handleNextSlider);
-prevBtn.addEventListener("click", handlePrevSlider);
+const handleForwardSlider = () => {
+  dotList.forEach((item, idx) => {
+    item.onclick = () => {
+      index = idx;
+      activeDot(idx);
+      handleNextSlider();
+    };
+  });
+};
 
 const activeDot = (index) => {
   index = index > itemLength ? 0 : index;
@@ -117,26 +127,53 @@ const activeDot = (index) => {
   dotList[index].classList.add("active");
 };
 
-dotList.forEach((item, idx) => {
-  item.onclick = () => {
-    index = idx;
-    activeDot(idx);
-    handleNextSlider();
-  };
-});
+const setupEvents = () => {
+  slider.addEventListener("transitionend", transitionEndHandler);
+  carousel.addEventListener("mouseenter", pauseSlider);
+  carousel.addEventListener("mouseleave", startSlider);
+  nextBtn.addEventListener("click", handleNextSlider);
+  prevBtn.addEventListener("click", handlePrevSlider);
+  handleForwardSlider();
+};
+window.addEventListener("resize", updateSliderLayout);
+setupEvents();
 
-startSlider();
+const createObserver = () => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        startSlider();
+      } else {
+        pauseSlider();
+      }
+    });
+  });
+  observer.observe(carousel);
+};
+createObserver();
 
+// =====================
 // ====== backToTop =======
+// =====================
 
-const backToTop = $(".back-to-top");
-
+// const backToTop = $(".back-to-top");
 window.addEventListener("scroll", () => {
-  if (window.scrollY > 200) {
-    backToTop.classList.add("active");
-  } else {
-    backToTop.classList.remove("active");
-  }
+  $(".back-top")?.classList.toggle("active", window.scrollY > 200);
 });
 
 AOS.init();
+
+const handleFullscreen = (selector) => {
+  const node = document.getElementById(selector);
+  if (node.requestFullscreen) {
+    node.requestFullscreen();
+  } else if (node.mozRequestFullScreen) {
+    node.mozRequestFullScreen();
+  } else if (node.webkitRequestFullscreen) {
+    node.webkitRequestFullscreen();
+  } else if (node.msRequestFullscreen) {
+    node.msRequestFullscreen();
+  }
+};
+// const fullscreen = document.querySelector(".fullscreen");
+// fullscreen.onclick = () => handleFullscreen("fullscreen-container");

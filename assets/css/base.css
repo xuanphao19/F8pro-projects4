@@ -94,6 +94,7 @@ section {
   padding-block: calc(var(--bs-gutter-y) * 2);
   scroll-margin-top: 100px;
 }
+h3.sub-title,
 .heading,
 .title {
   text-wrap: balance;
@@ -130,6 +131,7 @@ section .row {
 footer .col,
 section .col {
   width: 50%;
+  flex: 1;
 }
 
 section img {
@@ -208,4 +210,5 @@ button,
 .btn:hover {
   opacity: 0.8;
   cursor: pointer;
+  color: currentColor;
 }
